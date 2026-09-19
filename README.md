@@ -9,10 +9,15 @@ HTML + CSS + JavaScript murni (tanpa framework, tanpa build step) sehingga langs
 ```
 .
 ├── index.html
+├── dashboard.html
+├── cek-video.html
 ├── vercel.json
 └── assets
     ├── css/style.css
+    ├── css/dashboard.css
+    ├── js/auth.js
     ├── js/main.js
+    ├── js/dashboard.js
     ├── img/poster.svg      (gambar cadangan saat video belum termuat)
     ├── img/favicon.svg
     └── video/
@@ -47,6 +52,37 @@ Kalau filenya tidak ada, halaman tetap tampil memakai gradien abu-abu sebagai ca
 Ganti langsung di `index.html` — semuanya ditulis apa adanya di HTML, tidak ada template atau basis data.
 Gambar karya di `assets/img/work-1.jpg` sampai `work-6.jpg` diambil dari potongan video latar,
 tinggal ditimpa dengan foto proyek asli (ukuran 900x600 piksel).
+
+## Login, daftar, dan dashboard
+
+Alur akun berjalan sungguhan, tapi **seluruhnya di sisi browser** (`localStorage`) —
+tidak ada server dan tidak ada basis data, jadi ini untuk demo, bukan untuk data sungguhan.
+Siapa pun yang membuka halaman ini di komputernya punya daftar akun sendiri.
+
+**Akun contoh yang sudah tersedia:**
+
+| Email | Password |
+|-------|----------|
+| `wibukah@gmail.com` | `1234` |
+
+Klik tulisan akun coba di bawah tombol Login untuk mengisinya otomatis.
+Setelah masuk, halaman langsung berpindah ke `dashboard.html`.
+
+Mendaftar lewat tab **Register** juga berfungsi: akun baru tersimpan di browser,
+langsung masuk, dan bisa dipakai login lagi nanti. Tiap akun punya salinan data contohnya sendiri.
+
+### Isi dashboard (semua data contoh)
+
+| Halaman | Isi dan yang bisa dilakukan |
+|---------|------------------------------|
+| Ringkasan | Empat kartu angka berjalan, grafik pendapatan 12 bulan (bisa ditukar ke tabel, ada tooltip saat disentuh), bar proyek per kategori, aktivitas terbaru, dan daftar tugas yang bisa dicentang, ditambah, atau dihapus |
+| Proyek | Tabel dengan pencarian, filter status, urut per kolom, tambah proyek lewat modal, dan hapus baris — perubahannya bertahan setelah halaman dimuat ulang |
+| Klien | Kartu klien dengan nilai kerja sama |
+| Tagihan | Ringkasan nilai per status dan tombol "Tandai lunas" pada tagihan yang belum dibayar |
+| Pengaturan | Ubah nama dan password akun, tiga sakelar preferensi, dan tombol keluar |
+
+Membuka `dashboard.html` tanpa login akan langsung dilempar balik ke halaman depan,
+dan setelah keluar sesi ikut terhapus.
 
 ## Animasi yang aktif
 

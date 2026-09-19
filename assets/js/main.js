@@ -373,53 +373,138 @@
   }
 
   /* ===================================================
-     8. FORM LOGIN
+     8. FORM LOGIN & DAFTAR  (akun disimpan di browser)
      =================================================== */
-  function showError(msg) {
-    if (!formError) return;
-    formError.classList.remove("show");
-    void formError.offsetWidth;          // reset animasi getar
-    formError.textContent = msg;
-    formError.classList.add("show");
+  var paneLogin    = document.getElementById("paneLogin");
+  var paneRegister = document.getElementById("paneRegister");
+  var registerForm = document.getElementById("registerForm");
+  var regError     = document.getElementById("regError");
+
+  function pesanGalat(kotak, msg) {
+    if (!kotak) return;
+    kotak.classList.remove("show");
+    void kotak.offsetWidth;            // ulang animasi getar
+    kotak.textContent = msg;
+    kotak.classList.add("show");
   }
 
+  function showError(msg) { pesanGalat(formError, msg); }
+
   function hideError() {
-    if (!formError) return;
-    formError.textContent = "";
-    formError.classList.remove("show");
+    if (formError) { formError.textContent = ""; formError.classList.remove("show"); }
+    if (regError) { regError.textContent = ""; regError.classList.remove("show"); }
+  }
+
+  function gantiPane(keDaftar) {
+    if (!paneLogin || !paneRegister) return;
+    hideError();
+    paneLogin.hidden = keDaftar;
+    paneRegister.hidden = !keDaftar;
+    var aktif = keDaftar ? paneRegister : paneLogin;
+    aktif.classList.remove("masuk");
+    void aktif.offsetWidth;
+    aktif.classList.add("masuk");
+    var isian = aktif.querySelector("input");
+    if (isian) window.setTimeout(function () { isian.focus(); }, 260);
+  }
+
+  var keRegister = document.getElementById("keRegister");
+  var keLogin    = document.getElementById("keLogin");
+  if (keRegister) keRegister.addEventListener("click", function (e) { e.preventDefault(); gantiPane(true); });
+  if (keLogin) keLogin.addEventListener("click", function (e) { e.preventDefault(); gantiPane(false); });
+
+  var isiDemo = document.getElementById("isiDemo");
+  if (isiDemo && window.Auth) {
+    isiDemo.addEventListener("click", function () {
+      if (emailInput) emailInput.value = Auth.akunDemo.email;
+      if (passInput) passInput.value = Auth.akunDemo.sandi;
+      hideError();
+      if (passInput) passInput.focus();
+    });
+  }
+
+  var lupaSandi = document.getElementById("lupaSandi");
+  if (lupaSandi) {
+    lupaSandi.addEventListener("click", function (e) {
+      e.preventDefault();
+      showError("Demo ini menyimpan akun di browser, jadi reset password belum tersedia. Pakai akun coba di bawah.");
+    });
+  }
+
+  function sukses(tombol, teksAwal, tujuan) {
+    tombol.textContent = "Berhasil, membuka dashboard...";
+    window.setTimeout(function () { window.location.href = tujuan; }, 650);
+    window.setTimeout(function () {
+      tombol.textContent = teksAwal;
+      tombol.disabled = false;
+    }, 4000);
   }
 
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
+      if (!window.Auth) { showError("Modul akun gagal dimuat. Muat ulang halaman."); return; }
 
-      var email = emailInput ? emailInput.value.trim() : "";
-      var pass  = passInput ? passInput.value : "";
-      var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
-
-      if (!email || !pass) { showError("Email dan password wajib diisi."); return; }
-      if (!emailOk)        { showError("Format email belum benar."); return; }
-      if (pass.length < 6) { showError("Password minimal 6 karakter."); return; }
+      var hasil = Auth.masuk(emailInput ? emailInput.value : "", passInput ? passInput.value : "");
+      if (!hasil.ok) { showError(hasil.pesan); return; }
 
       hideError();
-
-      // >>> Sambungkan ke API/backend kamu di sini <<<
       var btn = form.querySelector(".btn-submit");
       if (!btn) return;
-      var original = btn.textContent;
-      btn.textContent = "Loading...";
+      var awal = btn.textContent;
       btn.disabled = true;
-      window.setTimeout(function () {
-        btn.textContent = original;
-        btn.disabled = false;
-        closeModal();
-        form.reset();
-      }, 900);
+      sukses(btn, awal, "dashboard.html");
     });
 
     [emailInput, passInput].forEach(function (el) {
       if (el) el.addEventListener("input", hideError);
     });
+  }
+
+  if (registerForm) {
+    registerForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      if (!window.Auth) { pesanGalat(regError, "Modul akun gagal dimuat. Muat ulang halaman."); return; }
+
+      var setuju = document.getElementById("regSetuju");
+      if (setuju && !setuju.checked) {
+        pesanGalat(regError, "Centang dulu persetujuan ketentuan layanan.");
+        return;
+      }
+
+      var hasil = Auth.daftar({
+        nama: document.getElementById("regNama").value,
+        email: document.getElementById("regEmail").value,
+        sandi: document.getElementById("regSandi").value,
+        ulangSandi: document.getElementById("regUlang").value
+      });
+
+      if (!hasil.ok) { pesanGalat(regError, hasil.pesan); return; }
+
+      hideError();
+      var btn = registerForm.querySelector(".btn-submit");
+      if (!btn) return;
+      var awal = btn.textContent;
+      btn.disabled = true;
+      sukses(btn, awal, "dashboard.html");
+    });
+
+    Array.prototype.forEach.call(registerForm.querySelectorAll("input"), function (el) {
+      el.addEventListener("input", hideError);
+    });
+  }
+
+  /* kalau sudah pernah masuk, tombol Login di navbar langsung ke dashboard */
+  if (window.Auth && Auth.sesi()) {
+    var sesiAktif = Auth.sesi();
+    if (openBtn) {
+      openBtn.textContent = "Dashboard";
+      openBtn.addEventListener("click", function (e) {
+        e.stopImmediatePropagation();
+        window.location.href = "dashboard.html";
+      }, true);
+    }
+    if (emailInput) emailInput.value = sesiAktif.email;
   }
 
   /* ===================================================

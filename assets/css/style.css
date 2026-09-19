@@ -746,6 +746,31 @@ body.no-scroll { overflow: hidden; }
   text-decoration: none;
 }
 
+/* ---- pane login / daftar ---- */
+.login-card .pane[hidden] { display: none; }
+.login-card .pane.masuk { animation: slideInUp .55s var(--ease-out) both; }
+
+.demo-hint {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  padding: 9px 12px;
+  font-family: inherit;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ink);
+  text-align: center;
+  background: rgba(255, 255, 255, .25);
+  border: 1px dashed rgba(20, 22, 26, .38);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .3s ease, transform .35s var(--ease-back);
+}
+.demo-hint:hover { background: rgba(255, 255, 255, .5); transform: translateY(-2px); }
+.demo-hint b { font-weight: 600; }
+
+.remember.setuju { margin: -8px 0 20px; font-size: 13px; }
+
 /* focus visible */
 a:focus-visible,
 button:focus-visible,
