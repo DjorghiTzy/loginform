@@ -212,7 +212,6 @@
   var progressBar = document.getElementById("progressBar");
   var bgShade     = document.getElementById("bgShade");
   var toTop       = document.getElementById("toTop");
-  var scrollCue   = document.getElementById("scrollCue");
   var navLinks    = document.querySelectorAll(".nav-links a");
   var sections    = document.querySelectorAll("main section[id]");
   var ticking     = false;
@@ -226,7 +225,6 @@
     if (progressBar) progressBar.style.transform = "scaleX(" + (y / max) + ")";
     if (bgShade) bgShade.style.opacity = Math.min(0.55, (y / vh) * 0.5);
     if (toTop) toTop.classList.toggle("show", y > vh * 0.7);
-    if (scrollCue) scrollCue.classList.toggle("hidden", y > 80);
 
     // scroll spy
     var currentId = "home";
@@ -321,6 +319,11 @@
 
   /* Saat halaman dibuka, modal tampil (sesuai desain) tanpa mengunci scroll.
      Begitu pengunjung mulai menggulir, modal menutup sendiri dengan halus. */
+  // di layar kecil kartu tidak tampil otomatis supaya isi hero terlihat utuh
+  if (modal && window.innerWidth <= 1024) {
+    modal.classList.remove("is-open", "is-passive");
+  }
+
   (function autoCloseOnFirstScroll() {
     if (!modal) return;
     var opts = { passive: true };
@@ -514,7 +517,220 @@
   }
 
   /* ===================================================
-     10. LAIN-LAIN
+     10. FILTER KARYA
+     =================================================== */
+  var filterBtns = document.querySelectorAll(".filter");
+  var workCards  = document.querySelectorAll(".work-card");
+
+  Array.prototype.forEach.call(filterBtns, function (btn) {
+    btn.addEventListener("click", function () {
+      var kategori = btn.getAttribute("data-filter");
+
+      Array.prototype.forEach.call(filterBtns, function (b) {
+        b.classList.toggle("is-active", b === btn);
+      });
+
+      Array.prototype.forEach.call(workCards, function (card, i) {
+        var cocok = kategori === "all" || card.getAttribute("data-cat") === kategori;
+
+        if (!cocok) {
+          card.classList.add("is-out");
+          window.setTimeout(function () {
+            if (card.classList.contains("is-out")) card.hidden = true;
+          }, 320);
+          return;
+        }
+
+        card.hidden = false;
+        card.classList.add("is-out");
+        window.setTimeout(function () { card.classList.remove("is-out"); }, 30 + i * 60);
+      });
+    });
+  });
+
+  /* ===================================================
+     11. HARGA: BULANAN / TAHUNAN
+     =================================================== */
+  var priceToggle = document.getElementById("priceToggle");
+  var labelMonth  = document.getElementById("labelMonth");
+  var labelYear   = document.getElementById("labelYear");
+  var hargaEls    = document.querySelectorAll(".price strong");
+
+  function rupiah(n) {
+    return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  }
+
+  if (priceToggle) {
+    priceToggle.addEventListener("click", function () {
+      var tahunan = !priceToggle.classList.contains("is-on");
+
+      priceToggle.classList.toggle("is-on", tahunan);
+      priceToggle.setAttribute("aria-checked", tahunan ? "true" : "false");
+      if (labelMonth) labelMonth.classList.toggle("is-on", !tahunan);
+      if (labelYear) labelYear.classList.toggle("is-on", tahunan);
+
+      Array.prototype.forEach.call(hargaEls, function (el) {
+        var box = el.parentNode;
+        box.classList.add("is-switching");
+        window.setTimeout(function () {
+          var nilai = el.getAttribute(tahunan ? "data-year" : "data-month");
+          el.textContent = rupiah(nilai);
+          var per = box.querySelector(".per");
+          if (per) per.textContent = tahunan ? "/bln, ditagih tahunan" : "/bln";
+          box.classList.remove("is-switching");
+        }, 220);
+      });
+    });
+  }
+
+  /* ===================================================
+     12. TESTIMONI BERGANTIAN
+     =================================================== */
+  var quotes   = document.querySelectorAll(".quote");
+  var dots     = document.querySelectorAll(".dot");
+  var quoteBox = document.getElementById("quoteBox");
+  var kutipan  = 0;
+  var timerKutipan = null;
+
+  function tampilkanKutipan(i) {
+    if (!quotes.length) return;
+    kutipan = (i + quotes.length) % quotes.length;
+    Array.prototype.forEach.call(quotes, function (q, n) { q.classList.toggle("is-on", n === kutipan); });
+    Array.prototype.forEach.call(dots, function (d, n) { d.classList.toggle("is-on", n === kutipan); });
+  }
+
+  function jalankanKutipan() {
+    hentikanKutipan();
+    if (quotes.length < 2 || reduceMotion) return;
+    timerKutipan = window.setInterval(function () { tampilkanKutipan(kutipan + 1); }, 6000);
+  }
+
+  function hentikanKutipan() {
+    if (timerKutipan) { window.clearInterval(timerKutipan); timerKutipan = null; }
+  }
+
+  Array.prototype.forEach.call(dots, function (d, n) {
+    d.addEventListener("click", function () { tampilkanKutipan(n); jalankanKutipan(); });
+  });
+
+  if (quoteBox) {
+    quoteBox.addEventListener("mouseenter", hentikanKutipan);
+    quoteBox.addEventListener("mouseleave", jalankanKutipan);
+  }
+  jalankanKutipan();
+
+  /* ===================================================
+     13. AKORDEON FAQ
+     =================================================== */
+  var accItems = document.querySelectorAll(".acc-item");
+
+  Array.prototype.forEach.call(accItems, function (item) {
+    var head = item.querySelector(".acc-head");
+    var body = item.querySelector(".acc-body");
+    if (!head || !body) return;
+
+    head.addEventListener("click", function () {
+      var sedangTerbuka = item.classList.contains("is-open");
+
+      Array.prototype.forEach.call(accItems, function (lain) {
+        var b = lain.querySelector(".acc-body");
+        var h = lain.querySelector(".acc-head");
+        lain.classList.remove("is-open");
+        if (b) b.style.maxHeight = "0px";
+        if (h) h.setAttribute("aria-expanded", "false");
+      });
+
+      if (!sedangTerbuka) {
+        item.classList.add("is-open");
+        body.style.maxHeight = body.scrollHeight + "px";
+        head.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  window.addEventListener("resize", function () {
+    Array.prototype.forEach.call(accItems, function (item) {
+      var body = item.querySelector(".acc-body");
+      if (body && item.classList.contains("is-open")) body.style.maxHeight = body.scrollHeight + "px";
+    });
+  }, { passive: true });
+
+  /* ===================================================
+     14. FORM KONTAK & NEWSLETTER
+     =================================================== */
+  var contactForm = document.getElementById("contactForm");
+  var cfError     = document.getElementById("cfError");
+  var cfDone      = document.getElementById("cfDone");
+
+  if (contactForm) {
+    contactForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      var nama  = contactForm.elements["nama"].value.trim();
+      var surel = contactForm.elements["email"].value.trim();
+      var pesan = contactForm.elements["pesan"].value.trim();
+      var surelOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(surel);
+
+      function salah(msg) {
+        if (!cfError) return;
+        cfError.classList.remove("show");
+        void cfError.offsetWidth;
+        cfError.textContent = msg;
+        cfError.classList.add("show");
+      }
+
+      if (!nama)        { salah("Nama masih kosong."); return; }
+      if (!surelOk)     { salah("Format email belum benar."); return; }
+      if (pesan.length < 10) { salah("Ceritakan kebutuhanmu sedikit lebih panjang (minimal 10 karakter)."); return; }
+
+      if (cfError) cfError.classList.remove("show");
+
+      var tombol = contactForm.querySelector("button[type=submit]");
+      if (tombol) { tombol.textContent = "Mengirim..."; tombol.disabled = true; }
+
+      window.setTimeout(function () {
+        if (cfDone) cfDone.hidden = false;
+        window.setTimeout(function () {
+          if (cfDone) cfDone.hidden = true;
+          contactForm.reset();
+          if (tombol) { tombol.textContent = "Kirim Pesan"; tombol.disabled = false; }
+        }, 3200);
+      }, 700);
+    });
+  }
+
+  var newsForm = document.getElementById("newsForm");
+  var newsMsg  = document.getElementById("newsMsg");
+
+  if (newsForm) {
+    newsForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var nilai = newsForm.elements["email"].value.trim();
+      var ok = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(nilai);
+      if (!newsMsg) return;
+      newsMsg.textContent = ok ? "Terima kasih, emailmu sudah terdaftar." : "Masukkan email yang benar dulu ya.";
+      newsMsg.style.color = ok ? "#cfd4da" : "#ffb4b4";
+      if (ok) newsForm.reset();
+    });
+  }
+
+  /* ===================================================
+     15. TOMBOL MAGNETIS
+     =================================================== */
+  if (!reduceMotion && window.matchMedia("(pointer: fine)").matches) {
+    Array.prototype.forEach.call(document.querySelectorAll(".magnetic"), function (el) {
+      el.addEventListener("mousemove", function (e) {
+        var r = el.getBoundingClientRect();
+        var x = (e.clientX - r.left - r.width / 2) * 0.28;
+        var y = (e.clientY - r.top - r.height / 2) * 0.4;
+        el.style.transform = "translate(" + x.toFixed(1) + "px," + y.toFixed(1) + "px)";
+      });
+      el.addEventListener("mouseleave", function () { el.style.transform = ""; });
+    });
+  }
+
+  /* ===================================================
+     16. LAIN-LAIN
      =================================================== */
   var year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();

@@ -4,8 +4,8 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <meta name="theme-color" content="#16181c" />
-<title>Logo — Login</title>
-<meta name="description" content="Halaman landing dengan video background HD, animasi halus, dan form login glassmorphism." />
+<title>Logo — Studio Digital</title>
+<meta name="description" content="Logo adalah studio digital: website, aplikasi, dan identitas merek dengan animasi yang halus." />
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,12 +16,10 @@
 </head>
 <body>
 
-  <!-- ===== PROGRESS BAR SCROLL ===== -->
   <div class="scroll-progress" aria-hidden="true"><span id="progressBar"></span></div>
 
   <!-- ===== VIDEO BACKGROUND ===== -->
   <div class="bg-wrapper">
-    <!-- Gradien cadangan (tampil kalau video belum ada / gagal load) -->
     <div class="bg-fallback" aria-hidden="true">
       <span class="star s1"></span><span class="star s2"></span><span class="star s3"></span>
       <span class="star s4"></span><span class="star s5"></span><span class="star s6"></span>
@@ -31,7 +29,6 @@
     <!-- >>> VIDEO KAMU: assets/video/background.mp4 (+ background.webm sebagai cadangan) <<< -->
     <video id="bgVideo" class="bg-video" autoplay muted loop playsinline preload="auto">
       <source src="assets/video/background.mp4" type="video/mp4" />
-      <!-- cadangan untuk browser yang tidak bisa memutar H.264 -->
       <source src="assets/video/background.webm" type="video/webm" />
     </video>
 
@@ -39,11 +36,8 @@
     <div class="bg-shade" id="bgShade" aria-hidden="true"></div>
   </div>
 
-  <!-- tombol cadangan: muncul hanya bila browser memblokir autoplay -->
   <button class="play-hint" id="playHint" type="button" hidden>
-    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
-      <path d="M8 5.5v13l11-6.5z" fill="currentColor" />
-    </svg>
+    <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" fill="currentColor"/></svg>
     Putar video latar
   </button>
 
@@ -60,6 +54,8 @@
         <li><a href="#home" class="active" data-scroll>Home</a></li>
         <li><a href="#about" data-scroll>About</a></li>
         <li><a href="#services" data-scroll>Services</a></li>
+        <li><a href="#work" data-scroll>Work</a></li>
+        <li><a href="#pricing" data-scroll>Pricing</a></li>
         <li><a href="#contact" data-scroll>Contact</a></li>
       </ul>
       <button class="btn-login-nav" id="openLogin" type="button">Login</button>
@@ -69,32 +65,68 @@
   <main>
     <!-- ===== HERO ===== -->
     <section class="hero" id="home">
-      <a href="#about" class="scroll-cue" id="scrollCue" data-scroll aria-label="Scroll ke bawah">
-        <span class="scroll-cue-text">Scroll</span>
-        <span class="scroll-cue-mouse"><span class="scroll-cue-dot"></span></span>
-      </a>
+      <div class="hero-inner">
+        <span class="eyebrow" data-hero="1">Studio Digital · Est. 2018</span>
+
+        <h1 class="hero-title">
+          <span class="line"><span data-hero="2">Kami membangun</span></span>
+          <span class="line"><span data-hero="3">wajah digital</span></span>
+          <span class="line"><span data-hero="4">yang <em>membekas</em></span></span>
+        </h1>
+
+        <p class="hero-text" data-hero="5">
+          Website, aplikasi, dan identitas merek untuk tim yang ingin terlihat
+          serius sejak halaman pertama. Dikerjakan rapi, dikirim tepat waktu.
+        </p>
+
+        <div class="hero-cta" data-hero="6">
+          <button type="button" class="btn-solid magnetic" data-open-login>Mulai Proyek</button>
+          <a href="#work" class="btn-ghost magnetic" data-scroll>Lihat Karya</a>
+        </div>
+
+        <ul class="hero-facts" data-hero="7">
+          <li><strong>120+</strong><span>Proyek rampung</span></li>
+          <li><strong>60+</strong><span>Klien aktif</span></li>
+          <li><strong>8 th</strong><span>Pengalaman</span></li>
+        </ul>
+      </div>
     </section>
+
+    <!-- ===== MARQUEE ===== -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee-track">
+        <span>AETHER</span><span>•</span><span>BATARA</span><span>•</span><span>CIPTALAB</span><span>•</span>
+        <span>DWIPA</span><span>•</span><span>EMBUN</span><span>•</span><span>FAJAR STUDIO</span><span>•</span>
+        <span>AETHER</span><span>•</span><span>BATARA</span><span>•</span><span>CIPTALAB</span><span>•</span>
+        <span>DWIPA</span><span>•</span><span>EMBUN</span><span>•</span><span>FAJAR STUDIO</span><span>•</span>
+      </div>
+    </div>
 
     <!-- ===== ABOUT ===== -->
     <section class="section" id="about">
       <div class="container about-grid">
         <div class="about-copy">
           <span class="eyebrow" data-reveal="up">About</span>
-          <h2 class="section-title" data-reveal="up" style="--d:.08s">Dibuat untuk pengalaman yang mulus</h2>
+          <h2 class="section-title" data-reveal="up" style="--d:.08s">Studio kecil,<br />standar besar</h2>
           <p class="section-text" data-reveal="up" style="--d:.16s">
-            Setiap elemen di halaman ini bergerak dengan transisi yang lembut — mulai dari menu,
-            kartu login, sampai perpindahan antar bagian. Tidak ada perpindahan yang terasa patah.
+            Tujuh orang, satu ruang kerja, dan kebiasaan yang sama: tidak menyerahkan
+            pekerjaan setengah jadi. Setiap proyek dikerjakan dari riset singkat,
+            desain, sampai halaman siap tayang.
           </p>
-          <p class="section-text" data-reveal="up" style="--d:.24s">
-            Latar video full screen tetap tenang di belakang, sementara konten meluncur masuk
-            saat kamu menggulir halaman.
-          </p>
-          <a href="#services" class="btn-ghost" data-reveal="up" data-scroll style="--d:.32s">Lihat Layanan</a>
+
+          <ul class="check-list">
+            <li data-reveal="up" style="--d:.22s">Riset dan wireframe sebelum satu piksel digambar</li>
+            <li data-reveal="up" style="--d:.28s">Desain responsif untuk layar ponsel sampai monitor lebar</li>
+            <li data-reveal="up" style="--d:.34s">Kode ringan tanpa framework berat yang bikin lambat</li>
+            <li data-reveal="up" style="--d:.40s">Pendampingan 30 hari setelah situs tayang</li>
+          </ul>
+
+          <a href="#services" class="btn-ghost magnetic" data-reveal="up" data-scroll style="--d:.46s">Lihat Layanan</a>
         </div>
 
         <div class="about-panel glass" data-reveal="right" style="--d:.12s">
-          <div class="stat"><strong data-count="120">0</strong><span>Proyek selesai</span></div>
-          <div class="stat"><strong data-count="60">0</strong><span>Klien aktif</span></div>
+          <div class="stat"><strong data-count="120" data-suffix="+">0</strong><span>Proyek selesai</span></div>
+          <div class="stat"><strong data-count="60" data-suffix="+">0</strong><span>Klien aktif</span></div>
           <div class="stat"><strong data-count="99" data-suffix="%">0</strong><span>Kepuasan</span></div>
           <div class="stat"><strong data-count="24" data-suffix="/7">0</strong><span>Dukungan</span></div>
         </div>
@@ -107,38 +139,259 @@
         <div class="section-head">
           <span class="eyebrow" data-reveal="up">Services</span>
           <h2 class="section-title" data-reveal="up" style="--d:.08s">Apa yang kami kerjakan</h2>
+          <p class="section-text center" data-reveal="up" style="--d:.16s">
+            Empat layanan inti yang bisa diambil terpisah atau sekaligus sebagai satu paket.
+          </p>
         </div>
 
         <div class="cards">
           <article class="card glass" data-reveal="up" style="--d:.05s">
             <span class="card-icon">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 8 5 12 9 16" /><polyline points="15 8 19 12 15 16" />
-              </svg>
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 8 5 12 9 16"/><polyline points="15 8 19 12 15 16"/></svg>
             </span>
-            <h3>Web Development</h3>
-            <p>Website cepat, ringan, dan rapi di semua ukuran layar — tanpa framework berat.</p>
+            <h3>Desain Web</h3>
+            <p>Landing page, company profile, dan toko online yang ringan, rapi, dan enak dipakai di layar mana pun.</p>
+            <span class="card-meta">Mulai 14 hari kerja</span>
           </article>
 
-          <article class="card glass" data-reveal="up" style="--d:.15s">
+          <article class="card glass" data-reveal="up" style="--d:.13s">
             <span class="card-icon">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="12" cy="12" r="8.5" /><path d="M12 3.5v17M3.5 12h17" />
-              </svg>
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18.5h2"/></svg>
             </span>
-            <h3>UI / UX Design</h3>
-            <p>Tampilan yang enak dilihat sekaligus enak dipakai, dengan animasi yang terukur.</p>
+            <h3>Aplikasi Mobile</h3>
+            <p>Aplikasi Android dan iOS dari satu basis kode, lengkap dengan proses rilis ke store.</p>
+            <span class="card-meta">Mulai 6 minggu</span>
           </article>
 
-          <article class="card glass" data-reveal="up" style="--d:.25s">
+          <article class="card glass" data-reveal="up" style="--d:.21s">
             <span class="card-icon">
-              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M7 18a4 4 0 010-8 5.5 5.5 0 0110.6-1.6A3.9 3.9 0 0117.5 18z" />
-              </svg>
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/></svg>
             </span>
-            <h3>Cloud Hosting</h3>
-            <p>Deploy sekali klik dan langsung online, siap diakses dari mana saja.</p>
+            <h3>Identitas Merek</h3>
+            <p>Logo, sistem warna, dan panduan merek yang tetap konsisten di semua kanal.</p>
+            <span class="card-meta">Mulai 10 hari kerja</span>
           </article>
+
+          <article class="card glass" data-reveal="up" style="--d:.29s">
+            <span class="card-icon">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 18l5-6 4 3.5L20 7"/><path d="M15 7h5v5"/></svg>
+            </span>
+            <h3>Optimasi &amp; SEO</h3>
+            <p>Situs yang cepat dibuka, terindeks rapi, dan siap dipakai untuk kampanye iklan.</p>
+            <span class="card-meta">Audit 3 hari</span>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== WORK ===== -->
+    <section class="section" id="work">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-reveal="up">Work</span>
+          <h2 class="section-title" data-reveal="up" style="--d:.08s">Karya pilihan</h2>
+        </div>
+
+        <div class="filters" data-reveal="up" style="--d:.14s">
+          <button type="button" class="filter is-active" data-filter="all">Semua</button>
+          <button type="button" class="filter" data-filter="web">Web</button>
+          <button type="button" class="filter" data-filter="app">Aplikasi</button>
+          <button type="button" class="filter" data-filter="brand">Merek</button>
+        </div>
+
+        <div class="work-grid" id="workGrid">
+          <article class="work-card" data-cat="web" data-reveal="up" style="--d:.05s">
+            <div class="work-thumb"><img src="assets/img/work-1.jpg" alt="Rasa Nusantara" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Web</span>
+              <h3>Rasa Nusantara</h3>
+              <p>Company profile restoran dengan menu digital dan reservasi.</p>
+            </div>
+          </article>
+
+          <article class="work-card" data-cat="brand" data-reveal="up" style="--d:.11s">
+            <div class="work-thumb"><img src="assets/img/work-2.jpg" alt="Langit Senja" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Merek</span>
+              <h3>Langit Senja</h3>
+              <p>Identitas merek kedai kopi: logo, kemasan, dan papan nama.</p>
+            </div>
+          </article>
+
+          <article class="work-card" data-cat="app" data-reveal="up" style="--d:.17s">
+            <div class="work-thumb"><img src="assets/img/work-3.jpg" alt="Nadi Fit" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Aplikasi</span>
+              <h3>Nadi Fit</h3>
+              <p>Aplikasi kebugaran harian dengan pencatatan latihan otomatis.</p>
+            </div>
+          </article>
+
+          <article class="work-card" data-cat="web" data-reveal="up" style="--d:.05s">
+            <div class="work-thumb"><img src="assets/img/work-4.jpg" alt="Pasar Awan" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Web</span>
+              <h3>Pasar Awan</h3>
+              <p>Toko online kerajinan lokal dengan pembayaran sekali klik.</p>
+            </div>
+          </article>
+
+          <article class="work-card" data-cat="app" data-reveal="up" style="--d:.11s">
+            <div class="work-thumb"><img src="assets/img/work-5.jpg" alt="Bimasakti" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Aplikasi</span>
+              <h3>Bimasakti</h3>
+              <p>Dasbor pemantauan armada kendaraan secara langsung.</p>
+            </div>
+          </article>
+
+          <article class="work-card" data-cat="brand" data-reveal="up" style="--d:.17s">
+            <div class="work-thumb"><img src="assets/img/work-6.jpg" alt="Titik Temu" loading="lazy" /></div>
+            <div class="work-body">
+              <span class="work-tag">Merek</span>
+              <h3>Titik Temu</h3>
+              <p>Rebranding ruang kerja bersama beserta sistem papan petunjuk.</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== PRICING ===== -->
+    <section class="section" id="pricing">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-reveal="up">Pricing</span>
+          <h2 class="section-title" data-reveal="up" style="--d:.08s">Paket yang jelas di depan</h2>
+          <p class="section-text center" data-reveal="up" style="--d:.16s">Tanpa biaya tersembunyi. Berhenti kapan saja.</p>
+        </div>
+
+        <div class="toggle-wrap" data-reveal="up" style="--d:.2s">
+          <span class="toggle-label is-on" id="labelMonth">Bulanan</span>
+          <button type="button" class="toggle" id="priceToggle" role="switch" aria-checked="false" aria-label="Ganti ke tahunan">
+            <span class="knob"></span>
+          </button>
+          <span class="toggle-label" id="labelYear">Tahunan <em>hemat 20%</em></span>
+        </div>
+
+        <div class="plans">
+          <article class="plan glass" data-reveal="up" style="--d:.06s">
+            <h3>Dasar</h3>
+            <p class="plan-note">Untuk usaha yang baru mulai online.</p>
+            <div class="price"><span class="cur">Rp</span><strong data-month="2500000" data-year="2000000">2.500.000</strong><span class="per">/bln</span></div>
+            <ul class="plan-list">
+              <li>1 halaman landing</li><li>Desain responsif</li><li>Form kontak</li><li>Revisi 2 kali</li>
+            </ul>
+            <button type="button" class="btn-outline magnetic" data-open-login>Pilih Dasar</button>
+          </article>
+
+          <article class="plan glass is-popular" data-reveal="up" style="--d:.14s">
+            <span class="badge">Paling dipilih</span>
+            <h3>Profesional</h3>
+            <p class="plan-note">Untuk tim yang serius menggarap kanal digital.</p>
+            <div class="price"><span class="cur">Rp</span><strong data-month="6500000" data-year="5200000">6.500.000</strong><span class="per">/bln</span></div>
+            <ul class="plan-list">
+              <li>Sampai 8 halaman</li><li>Animasi dan interaksi khusus</li><li>Integrasi CMS</li><li>Revisi tanpa batas</li><li>Dukungan prioritas</li>
+            </ul>
+            <button type="button" class="btn-solid magnetic" data-open-login>Pilih Profesional</button>
+          </article>
+
+          <article class="plan glass" data-reveal="up" style="--d:.22s">
+            <h3>Skala</h3>
+            <p class="plan-note">Untuk produk yang tumbuh cepat.</p>
+            <div class="price"><span class="cur">Rp</span><strong data-month="12000000" data-year="9600000">12.000.000</strong><span class="per">/bln</span></div>
+            <ul class="plan-list">
+              <li>Halaman tanpa batas</li><li>Aplikasi web dan mobile</li><li>Audit performa bulanan</li><li>Manajer proyek khusus</li><li>SLA 8 jam</li>
+            </ul>
+            <button type="button" class="btn-outline magnetic" data-open-login>Pilih Skala</button>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== TESTIMONI ===== -->
+    <section class="section" id="testimoni">
+      <div class="container">
+        <div class="section-head">
+          <span class="eyebrow" data-reveal="up">Testimoni</span>
+          <h2 class="section-title" data-reveal="up" style="--d:.08s">Kata mereka</h2>
+        </div>
+
+        <div class="quote-box glass" data-reveal="zoom" style="--d:.12s" id="quoteBox">
+          <div class="quote-mark" aria-hidden="true">&ldquo;</div>
+
+          <ul class="quotes" id="quotes">
+            <li class="quote is-on">
+              <p>Situsnya jadi jauh lebih cepat dan pesanan lewat web naik hampir dua kali lipat dalam dua bulan. Prosesnya juga tidak bertele-tele.</p>
+              <div class="who"><span class="ava">AP</span><div><strong>Andini Prameswari</strong><span>Founder, Rasa Nusantara</span></div></div>
+            </li>
+            <li class="quote">
+              <p>Tim ini menerjemahkan catatan produk kami jadi tampilan yang masuk akal. Pengguna baru kami bertahan lebih lama sejak versi barunya rilis.</p>
+              <div class="who"><span class="ava">BS</span><div><strong>Bayu Saputra</strong><span>Product Lead, Nadi Fit</span></div></div>
+            </li>
+            <li class="quote">
+              <p>Yang paling saya suka: semua dikirim tepat waktu dan tidak ada tagihan kejutan di akhir. Komunikasinya jelas dari awal.</p>
+              <div class="who"><span class="ava">CW</span><div><strong>Clara Wijaya</strong><span>Marketing, Pasar Awan</span></div></div>
+            </li>
+          </ul>
+
+          <div class="dots" id="quoteDots">
+            <button type="button" class="dot is-on" aria-label="Testimoni 1"></button>
+            <button type="button" class="dot" aria-label="Testimoni 2"></button>
+            <button type="button" class="dot" aria-label="Testimoni 3"></button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== FAQ ===== -->
+    <section class="section" id="faq">
+      <div class="container narrow">
+        <div class="section-head">
+          <span class="eyebrow" data-reveal="up">FAQ</span>
+          <h2 class="section-title" data-reveal="up" style="--d:.08s">Pertanyaan yang sering masuk</h2>
+        </div>
+
+        <div class="accordion" id="accordion">
+          <div class="acc-item glass" data-reveal="up" style="--d:.05s">
+            <button type="button" class="acc-head" aria-expanded="false">
+              <span>Berapa lama pengerjaan satu website?</span>
+              <span class="acc-icon" aria-hidden="true"></span>
+            </button>
+            <div class="acc-body"><p>Landing page rata-rata 14 hari kerja. Situs multi halaman 3 sampai 6 minggu, tergantung jumlah halaman dan kesiapan materi.</p></div>
+          </div>
+
+          <div class="acc-item glass" data-reveal="up" style="--d:.1s">
+            <button type="button" class="acc-head" aria-expanded="false">
+              <span>Apakah bisa revisi?</span>
+              <span class="acc-icon" aria-hidden="true"></span>
+            </button>
+            <div class="acc-body"><p>Bisa. Paket Dasar dapat dua kali revisi, paket Profesional dan Skala tanpa batas selama masih dalam lingkup yang disepakati.</p></div>
+          </div>
+
+          <div class="acc-item glass" data-reveal="up" style="--d:.15s">
+            <button type="button" class="acc-head" aria-expanded="false">
+              <span>Harga sudah termasuk domain dan hosting?</span>
+              <span class="acc-icon" aria-hidden="true"></span>
+            </button>
+            <div class="acc-body"><p>Hosting tahun pertama sudah termasuk. Domain dibeli atas nama kamu sendiri supaya kepemilikannya jelas.</p></div>
+          </div>
+
+          <div class="acc-item glass" data-reveal="up" style="--d:.2s">
+            <button type="button" class="acc-head" aria-expanded="false">
+              <span>Bagaimana cara memulai?</span>
+              <span class="acc-icon" aria-hidden="true"></span>
+            </button>
+            <div class="acc-body"><p>Kirim kebutuhanmu lewat form di bawah. Kami balas maksimal satu hari kerja dengan perkiraan waktu dan biaya.</p></div>
+          </div>
+
+          <div class="acc-item glass" data-reveal="up" style="--d:.25s">
+            <button type="button" class="acc-head" aria-expanded="false">
+              <span>Menerima proyek dari luar Jakarta?</span>
+              <span class="acc-icon" aria-hidden="true"></span>
+            </button>
+            <div class="acc-body"><p>Tentu. Sebagian besar klien kami dari luar kota dan semuanya dikerjakan jarak jauh dengan rapat berkala.</p></div>
+          </div>
         </div>
       </div>
     </section>
@@ -151,49 +404,124 @@
           <h2 class="section-title" data-reveal="up" style="--d:.08s">Mari mulai sesuatu</h2>
         </div>
 
-        <div class="contact-panel glass" data-reveal="zoom" style="--d:.12s">
-          <ul class="contact-list">
-            <li>
-              <span class="contact-ico">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8">
-                  <rect x="2.5" y="5" width="19" height="14" rx="2.5" /><path d="M3 7l9 6 9-6" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-              </span>
-              <div><strong>Email</strong><span>halo@example.com</span></div>
-            </li>
-            <li>
-              <span class="contact-ico">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M6 3h3l2 5-2.5 1.5a12 12 0 006 6L16 13l5 2v3a2 2 0 01-2.2 2A17 17 0 014 5.2 2 2 0 016 3z"/>
-                </svg>
-              </span>
-              <div><strong>Telepon</strong><span>+62 812 0000 0000</span></div>
-            </li>
-            <li>
-              <span class="contact-ico">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/>
-                </svg>
-              </span>
-              <div><strong>Lokasi</strong><span>Jakarta, Indonesia</span></div>
-            </li>
-          </ul>
+        <div class="contact-grid">
+          <div class="contact-side glass" data-reveal="left" style="--d:.1s">
+            <ul class="contact-list">
+              <li>
+                <span class="contact-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="5" width="19" height="14" rx="2.5"/><path d="M3 7l9 6 9-6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                <div><strong>Email</strong><span>halo@logostudio.id</span></div>
+              </li>
+              <li>
+                <span class="contact-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h3l2 5-2.5 1.5a12 12 0 006 6L16 13l5 2v3a2 2 0 01-2.2 2A17 17 0 014 5.2 2 2 0 016 3z"/></svg></span>
+                <div><strong>Telepon</strong><span>+62 812 0000 0000</span></div>
+              </li>
+              <li>
+                <span class="contact-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.6 7-11a7 7 0 10-14 0c0 5.4 7 11 7 11z"/><circle cx="12" cy="10" r="2.6"/></svg></span>
+                <div><strong>Studio</strong><span>Jl. Kemang Raya 24, Jakarta Selatan</span></div>
+              </li>
+              <li>
+                <span class="contact-ico"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg></span>
+                <div><strong>Jam kerja</strong><span>Senin – Jumat, 09.00 – 18.00 WIB</span></div>
+              </li>
+            </ul>
 
-          <button type="button" class="btn-cta" data-open-login>Login untuk Memulai</button>
+            <div class="contact-note">
+              <span class="pulse" aria-hidden="true"></span>
+              Sedang menerima proyek untuk kuartal ini · balasan maksimal 1 hari kerja
+            </div>
+          </div>
+
+          <form class="contact-form glass" id="contactForm" novalidate data-reveal="right" style="--d:.16s">
+            <div class="cf-row">
+              <label class="cf-field">
+                <input type="text" name="nama" placeholder=" " required />
+                <span>Nama lengkap</span>
+              </label>
+              <label class="cf-field">
+                <input type="email" name="email" placeholder=" " required />
+                <span>Email</span>
+              </label>
+            </div>
+            <label class="cf-field">
+              <select name="paket">
+                <option>Paket Dasar</option>
+                <option selected>Paket Profesional</option>
+                <option>Paket Skala</option>
+                <option>Belum tahu, minta saran</option>
+              </select>
+              <span class="always">Paket yang diminati</span>
+            </label>
+            <label class="cf-field">
+              <textarea name="pesan" rows="4" placeholder=" " required></textarea>
+              <span>Ceritakan kebutuhanmu</span>
+            </label>
+
+            <p class="cf-error" id="cfError" role="alert"></p>
+            <button type="submit" class="btn-solid wide magnetic">Kirim Pesan</button>
+
+            <div class="cf-done" id="cfDone" hidden>
+              <span class="tick" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5l5 5L20 7"/></svg>
+              </span>
+              <b>Pesan terkirim</b>
+              <span>Terima kasih. Kami balas paling lambat satu hari kerja.</span>
+            </div>
+          </form>
         </div>
       </div>
     </section>
 
+    <!-- ===== FOOTER ===== -->
     <footer class="footer">
-      <p data-reveal="up">© <span id="year">2026</span> Logo. All rights reserved.</p>
+      <div class="container footer-grid">
+        <div class="foot-brand" data-reveal="up">
+          <span class="logo">Logo</span>
+          <p>Studio digital yang mengerjakan website, aplikasi, dan identitas merek sejak 2018.</p>
+          <div class="socials">
+            <a href="#" aria-label="Instagram"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3.5" y="3.5" width="17" height="17" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17" cy="7" r="1.2" fill="currentColor" stroke="none"/></svg></a>
+            <a href="#" aria-label="X"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></a>
+            <a href="#" aria-label="LinkedIn"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M6 10v8M6 6.5v.01M11 18v-4.5a2.5 2.5 0 015 0V18"/></svg></a>
+          </div>
+        </div>
+
+        <div class="foot-col" data-reveal="up" style="--d:.06s">
+          <h4>Layanan</h4>
+          <a href="#services" data-scroll>Desain Web</a>
+          <a href="#services" data-scroll>Aplikasi Mobile</a>
+          <a href="#services" data-scroll>Identitas Merek</a>
+          <a href="#services" data-scroll>Optimasi &amp; SEO</a>
+        </div>
+
+        <div class="foot-col" data-reveal="up" style="--d:.12s">
+          <h4>Perusahaan</h4>
+          <a href="#about" data-scroll>Tentang</a>
+          <a href="#work" data-scroll>Karya</a>
+          <a href="#pricing" data-scroll>Harga</a>
+          <a href="#faq" data-scroll>FAQ</a>
+        </div>
+
+        <div class="foot-col" data-reveal="up" style="--d:.18s">
+          <h4>Kabar studio</h4>
+          <p class="foot-note">Satu email per bulan. Tanpa spam.</p>
+          <form class="news" id="newsForm" novalidate>
+            <input type="email" name="email" placeholder="Email kamu" aria-label="Email untuk berlangganan" />
+            <button type="submit" aria-label="Berlangganan">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+          <span class="news-msg" id="newsMsg"></span>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>© <span id="year">2026</span> Logo Studio. Seluruh konten di halaman ini contoh.</p>
+        <p>Dibuat dengan HTML, CSS, dan JavaScript murni.</p>
+      </div>
     </footer>
   </main>
 
-  <!-- ===== BACK TO TOP ===== -->
   <button class="to-top" id="toTop" type="button" aria-label="Kembali ke atas">
-    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M12 19V6M6 12l6-6 6 6" />
-    </svg>
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V6M6 12l6-6 6 6"/></svg>
   </button>
 
   <!-- ===== LOGIN MODAL ===== -->
@@ -202,9 +530,7 @@
   <div class="modal-wrapper is-open is-passive" id="loginModal" role="dialog" aria-modal="true" aria-labelledby="loginTitle">
     <section class="login-card">
       <button class="close-btn" id="closeLogin" type="button" aria-label="Tutup">
-        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" />
-        </svg>
+        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
       </button>
 
       <h1 class="login-title" id="loginTitle">Login</h1>
@@ -213,30 +539,21 @@
         <div class="field">
           <input type="email" id="email" name="email" placeholder="Email" autocomplete="email" required />
           <span class="field-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="20" height="20">
-              <rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/>
-              <path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" width="20" height="20"><rect x="2.5" y="5" width="19" height="14" rx="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M3 7l9 6 9-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </span>
         </div>
 
         <div class="field">
           <input type="password" id="password" name="password" placeholder="Password" autocomplete="current-password" required />
           <span class="field-icon" aria-hidden="true">
-            <svg viewBox="0 0 24 24" width="20" height="20">
-              <rect x="4.5" y="10" width="15" height="10" rx="2.5" fill="currentColor"/>
-              <path d="M8 10V7.5a4 4 0 118 0V10" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/>
-            </svg>
+            <svg viewBox="0 0 24 24" width="20" height="20"><rect x="4.5" y="10" width="15" height="10" rx="2.5" fill="currentColor"/><path d="M8 10V7.5a4 4 0 118 0V10" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg>
           </span>
         </div>
 
         <p class="form-error" id="formError" role="alert"></p>
 
         <div class="form-row">
-          <label class="remember">
-            <input type="checkbox" id="remember" name="remember" />
-            <span>Remember me</span>
-          </label>
+          <label class="remember"><input type="checkbox" id="remember" name="remember" /><span>Remember me</span></label>
           <a href="#" class="forgot">Forget Password?</a>
         </div>
 

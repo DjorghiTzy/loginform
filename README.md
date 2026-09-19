@@ -32,10 +32,21 @@ Kalau filenya tidak ada, halaman tetap tampil memakai gradien abu-abu sebagai ca
 
 | Bagian | Keterangan |
 |--------|------------|
-| Hero | Video full screen + kartu login yang tampil saat halaman dibuka |
-| About | Teks + panel statistik dengan angka berjalan |
-| Services | Tiga kartu layanan |
-| Contact | Panel info kontak + tombol yang membuka form login |
+| Hero | Video full screen, judul besar, dua tombol aksi, dan kartu login |
+| Marquee | Deretan nama klien yang berjalan terus |
+| About | Teks, daftar poin, dan panel statistik dengan angka berjalan |
+| Services | Empat kartu layanan |
+| Work | Enam karya dengan filter kategori (Semua / Web / Aplikasi / Merek) |
+| Pricing | Tiga paket dengan sakelar harga bulanan dan tahunan |
+| Testimoni | Kutipan klien yang berganti sendiri, bisa diklik lewat titik navigasi |
+| FAQ | Akordeon lima pertanyaan |
+| Contact | Info studio + form pesan dengan validasi dan layar konfirmasi |
+| Footer | Kolom tautan, sosial media, dan form berlangganan |
+
+**Semua isi teks, nama proyek, harga, nama orang, dan angka di halaman ini adalah data contoh.**
+Ganti langsung di `index.html` — semuanya ditulis apa adanya di HTML, tidak ada template atau basis data.
+Gambar karya di `assets/img/work-1.jpg` sampai `work-6.jpg` diambil dari potongan video latar,
+tinggal ditimpa dengan foto proyek asli (ukuran 900x600 piksel).
 
 ## Animasi yang aktif
 
