@@ -425,13 +425,26 @@
   var video = document.getElementById("bgVideo");
 
   if (video) {
+    // properti (bukan cuma atribut) — beberapa browser hanya mengizinkan
+    // autoplay kalau keduanya benar-benar diset.
+    video.muted = true;
+    video.defaultMuted = true;
+    video.playsInline = true;
+
     var tryPlay = function () {
+      if (!video.paused) return;
       var p = video.play();
       if (p && typeof p.catch === "function") p.catch(function () { /* diabaikan */ });
     };
+
     tryPlay();
+    video.addEventListener("loadedmetadata", tryPlay);
+    video.addEventListener("canplay", tryPlay);
     document.addEventListener("click", tryPlay, { once: true });
     document.addEventListener("touchstart", tryPlay, { once: true });
+    document.addEventListener("visibilitychange", function () {
+      if (!document.hidden) tryPlay();
+    });
 
     // Kalau file video benar-benar tidak ada / tidak didukung, sembunyikan <video>
     // agar gradien cadangan yang tampil. Video yang hanya "lambat" tidak disembunyikan.
