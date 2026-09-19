@@ -15,13 +15,17 @@ HTML + CSS + JavaScript murni (tanpa framework, tanpa build step) sehingga langs
     ├── js/main.js
     ├── img/poster.svg      (gambar cadangan saat video belum termuat)
     ├── img/favicon.svg
-    └── video/background.mp4   <-- VIDEO KAMU
+    └── video/
+        ├── background.mp4       <-- VIDEO KAMU (dipakai semua browser umum)
+        └── background.webm      <-- cadangan untuk browser tanpa codec H.264
 ```
 
 ## Mengganti video
 
 Timpa file `assets/video/background.mp4` dengan video baru, lalu commit & push.
 **Namanya harus tetap `background.mp4`** — halaman mencari path itu.
+Kalau videonya diganti, hapus juga `background.webm` (atau buat ulang versinya), supaya
+browser tanpa codec H.264 tidak memutar video lama.
 Kalau filenya tidak ada, halaman tetap tampil memakai gradien abu-abu sebagai cadangan.
 
 ## Isi halaman

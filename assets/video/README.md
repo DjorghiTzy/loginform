@@ -11,4 +11,12 @@ Saran biar lancar di Vercel:
 - Ukuran file sebaiknya di bawah 25 MB (batas file GitHub 100 MB)
 - Audio boleh ada, tapi video diputar dalam keadaan muted
 
-Kalau file ini hilang, halaman tetap normal dan otomatis memakai gradien abu-abu sebagai cadangan.
+`background.webm` adalah versi cadangan (VP8, 1280x720) untuk browser yang tidak bisa
+memutar H.264. Kalau `background.mp4` diganti, hapus atau buat ulang file webm ini
+supaya tidak ada browser yang memutar video lama:
+
+```
+ffmpeg -i background.mp4 -vf "scale=1280:-2,fps=30" -c:v libvpx -b:v 1300k -an background.webm
+```
+
+Kalau kedua file hilang, halaman tetap normal dan otomatis memakai gradien abu-abu sebagai cadangan.

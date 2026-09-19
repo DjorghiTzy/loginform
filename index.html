@@ -28,10 +28,12 @@
       <span class="star s7"></span><span class="star s8"></span><span class="star s9"></span>
     </div>
 
-    <!-- >>> TARUH VIDEO KAMU DI: assets/video/background.mp4 (opsional: background.webm) <<< -->
+    <!-- >>> VIDEO KAMU: assets/video/background.mp4 (+ background.webm sebagai cadangan) <<< -->
     <video id="bgVideo" class="bg-video" autoplay muted loop playsinline preload="auto"
            poster="assets/img/poster.svg">
       <source src="assets/video/background.mp4" type="video/mp4" />
+      <!-- cadangan untuk browser yang tidak bisa memutar H.264 -->
+      <source src="assets/video/background.webm" type="video/webm" />
     </video>
 
     <div class="bg-overlay" aria-hidden="true"></div>
