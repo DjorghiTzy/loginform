@@ -1,9 +1,262 @@
 /* =========================================================
    Logo — Landing + Login  |  main.js
+   Semua animasi, smooth scroll, dan interaksi halaman.
    ========================================================= */
 (function () {
   "use strict";
 
+  var doc  = document.documentElement;
+  var body = document.body;
+
+  var reduceMotion = window.matchMedia &&
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ===================================================
+     1. SMOOTH SCROLL (inersia lembut ala "slide")
+     =================================================== */
+  var Scroller = (function () {
+    var canSmooth = !reduceMotion &&
+      !!window.requestAnimationFrame &&
+      window.matchMedia("(pointer: fine)").matches &&   // di layar sentuh pakai inersia bawaan
+      window.innerWidth > 860;
+
+    var target = window.pageYOffset;
+    var current = target;
+    var running = false;
+    var tweening = false;
+    var locked = false;
+    var EASE = 0.12;
+
+    function maxScroll() {
+      return Math.max(0, doc.scrollHeight - window.innerHeight);
+    }
+
+    function clamp(v) {
+      return Math.max(0, Math.min(v, maxScroll()));
+    }
+
+    function loop() {
+      var diff = target - current;
+      if (Math.abs(diff) < 0.4) {
+        current = target;
+        window.scrollTo(0, current);
+        running = false;
+        return;
+      }
+      current += diff * EASE;
+      window.scrollTo(0, current);
+      window.requestAnimationFrame(loop);
+    }
+
+    function start() {
+      if (running) return;
+      running = true;
+      window.requestAnimationFrame(loop);
+    }
+
+    function onWheel(e) {
+      if (locked || tweening || e.ctrlKey) return;
+      var delta = e.deltaY;
+      if (e.deltaMode === 1) delta *= 18;          // baris
+      else if (e.deltaMode === 2) delta *= window.innerHeight; // halaman
+      e.preventDefault();
+      target = clamp(target + delta);
+      start();
+    }
+
+    function sync() {
+      if (running || tweening) return;
+      target = current = window.pageYOffset;
+    }
+
+    /* animasi scroll ke posisi tertentu (dipakai menu & tombol) */
+    function easeInOutCubic(t) {
+      return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+    }
+
+    function scrollTo(y, duration) {
+      y = clamp(y);
+      if (reduceMotion) {
+        window.scrollTo(0, y);
+        target = current = y;
+        return;
+      }
+      var startY = window.pageYOffset;
+      var dist = y - startY;
+      if (Math.abs(dist) < 1) return;
+      var time = duration || Math.min(1400, Math.max(600, Math.abs(dist) * 0.7));
+      var startTime = null;
+      tweening = true;
+
+      function step(now) {
+        if (startTime === null) startTime = now;
+        var p = Math.min(1, (now - startTime) / time);
+        var val = startY + dist * easeInOutCubic(p);
+        window.scrollTo(0, val);
+        current = target = val;
+        if (p < 1) {
+          window.requestAnimationFrame(step);
+        } else {
+          tweening = false;
+          current = target = y;
+        }
+      }
+      window.requestAnimationFrame(step);
+    }
+
+    if (canSmooth) {
+      doc.style.scrollBehavior = "auto";  // jangan bentrok dengan mesin sendiri
+      window.addEventListener("wheel", onWheel, { passive: false });
+    }
+    window.addEventListener("scroll", sync, { passive: true });
+    window.addEventListener("resize", function () {
+      target = clamp(target);
+      sync();
+    }, { passive: true });
+
+    return {
+      scrollTo: scrollTo,
+      lock: function (v) { locked = v; },
+      sync: sync
+    };
+  })();
+
+  /* ===================================================
+     2. ANCHOR LINK -> SCROLL HALUS
+     =================================================== */
+  var navbar = document.getElementById("navbar");
+
+  function navHeight() {
+    return navbar ? navbar.offsetHeight : 0;
+  }
+
+  Array.prototype.forEach.call(document.querySelectorAll("[data-scroll]"), function (link) {
+    link.addEventListener("click", function (e) {
+      var hash = link.getAttribute("href");
+      if (!hash || hash.charAt(0) !== "#") return;
+      var section = document.querySelector(hash);
+      if (!section) return;
+
+      e.preventDefault();
+      closeNav();
+      closeModal();
+
+      var top = section.getBoundingClientRect().top + window.pageYOffset;
+      var offset = (hash === "#home") ? 0 : top - navHeight() + 1;
+      Scroller.scrollTo(hash === "#home" ? 0 : offset);
+
+      if (window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", hash);
+      }
+    });
+  });
+
+  /* ===================================================
+     3. SCROLL REVEAL
+     =================================================== */
+  var revealItems = document.querySelectorAll("[data-reveal]");
+
+  if ("IntersectionObserver" in window && !reduceMotion) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-visible");
+        io.unobserve(entry.target);
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -8% 0px" });
+
+    Array.prototype.forEach.call(revealItems, function (el) { io.observe(el); });
+  } else {
+    Array.prototype.forEach.call(revealItems, function (el) { el.classList.add("is-visible"); });
+  }
+
+  /* ===================================================
+     4. ANGKA BERJALAN (statistik About)
+     =================================================== */
+  var counters = document.querySelectorAll("[data-count]");
+
+  function runCounter(el) {
+    var end = parseInt(el.getAttribute("data-count"), 10) || 0;
+    var suffix = el.getAttribute("data-suffix") || "";
+    if (reduceMotion) { el.textContent = end + suffix; return; }
+
+    var duration = 1600;
+    var startTime = null;
+
+    function step(now) {
+      if (startTime === null) startTime = now;
+      var p = Math.min(1, (now - startTime) / duration);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = Math.round(end * eased) + suffix;
+      if (p < 1) window.requestAnimationFrame(step);
+    }
+    window.requestAnimationFrame(step);
+  }
+
+  if ("IntersectionObserver" in window) {
+    var countObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        runCounter(entry.target);
+        countObserver.unobserve(entry.target);
+      });
+    }, { threshold: 0.4 });
+    Array.prototype.forEach.call(counters, function (el) { countObserver.observe(el); });
+  } else {
+    Array.prototype.forEach.call(counters, runCounter);
+  }
+
+  /* ===================================================
+     5. EFEK SAAT SCROLL (navbar, progress, shade, spy)
+     =================================================== */
+  var progressBar = document.getElementById("progressBar");
+  var bgShade     = document.getElementById("bgShade");
+  var toTop       = document.getElementById("toTop");
+  var scrollCue   = document.getElementById("scrollCue");
+  var navLinks    = document.querySelectorAll(".nav-links a");
+  var sections    = document.querySelectorAll("main section[id]");
+  var ticking     = false;
+
+  function onScrollFrame() {
+    var y = window.pageYOffset;
+    var max = Math.max(1, doc.scrollHeight - window.innerHeight);
+    var vh = window.innerHeight;
+
+    if (navbar) navbar.classList.toggle("scrolled", y > 40);
+    if (progressBar) progressBar.style.transform = "scaleX(" + (y / max) + ")";
+    if (bgShade) bgShade.style.opacity = Math.min(0.55, (y / vh) * 0.5);
+    if (toTop) toTop.classList.toggle("show", y > vh * 0.7);
+    if (scrollCue) scrollCue.classList.toggle("hidden", y > 80);
+
+    // scroll spy
+    var currentId = "home";
+    Array.prototype.forEach.call(sections, function (sec) {
+      if (y >= sec.offsetTop - navHeight() - 120) currentId = sec.id;
+    });
+    Array.prototype.forEach.call(navLinks, function (a) {
+      a.classList.toggle("active", a.getAttribute("href") === "#" + currentId);
+    });
+
+    ticking = false;
+  }
+
+  function requestScrollFrame() {
+    if (ticking) return;
+    ticking = true;
+    window.requestAnimationFrame(onScrollFrame);
+  }
+
+  window.addEventListener("scroll", requestScrollFrame, { passive: true });
+  window.addEventListener("resize", requestScrollFrame, { passive: true });
+  requestScrollFrame();
+
+  if (toTop) {
+    toTop.addEventListener("click", function () { Scroller.scrollTo(0, 1100); });
+  }
+
+  /* ===================================================
+     6. MODAL LOGIN
+     =================================================== */
   var modal      = document.getElementById("loginModal");
   var backdrop   = document.getElementById("modalBackdrop");
   var openBtn    = document.getElementById("openLogin");
@@ -12,33 +265,50 @@
   var formError  = document.getElementById("formError");
   var emailInput = document.getElementById("email");
   var passInput  = document.getElementById("password");
-  var navToggle  = document.getElementById("navToggle");
-  var navMenu    = document.getElementById("navMenu");
-  var video      = document.getElementById("bgVideo");
 
-  /* ---------- Modal ---------- */
+  var modalLocked = false;   // true = dibuka user, scroll halaman dikunci
+
+  function lockScroll(v) {
+    if (v) {
+      var gap = window.innerWidth - doc.clientWidth;
+      if (gap > 0) body.style.paddingRight = gap + "px";
+      doc.style.overflow = "hidden";
+    } else {
+      doc.style.overflow = "";
+      body.style.paddingRight = "";
+    }
+    body.classList.toggle("no-scroll", v);
+    Scroller.lock(v);
+    modalLocked = v;
+  }
+
   function openModal() {
     if (!modal) return;
     modal.classList.add("is-open");
+    modal.classList.remove("is-passive");
     if (backdrop) backdrop.classList.add("is-open");
     closeNav();
-    window.setTimeout(function () {
-      if (emailInput) emailInput.focus();
-    }, 220);
+    lockScroll(true);
+    window.setTimeout(function () { if (emailInput) emailInput.focus(); }, 320);
   }
 
   function closeModal() {
-    if (!modal) return;
+    if (!modal || !modal.classList.contains("is-open")) return;
     modal.classList.remove("is-open");
+    modal.classList.remove("is-passive");
     if (backdrop) backdrop.classList.remove("is-open");
+    lockScroll(false);
     hideError();
   }
 
-  if (openBtn)  openBtn.addEventListener("click", openModal);
+  if (openBtn) openBtn.addEventListener("click", openModal);
   if (closeBtn) closeBtn.addEventListener("click", closeModal);
   if (backdrop) backdrop.addEventListener("click", closeModal);
 
-  // klik area kosong di luar kartu
+  Array.prototype.forEach.call(document.querySelectorAll("[data-open-login]"), function (btn) {
+    btn.addEventListener("click", openModal);
+  });
+
   if (modal) {
     modal.addEventListener("click", function (e) {
       if (e.target === modal) closeModal();
@@ -46,13 +316,42 @@
   }
 
   document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" || e.key === "Esc") {
-      closeModal();
-      closeNav();
-    }
+    if (e.key === "Escape" || e.key === "Esc") { closeModal(); closeNav(); }
   });
 
-  /* ---------- Navbar mobile ---------- */
+  /* Saat halaman dibuka, modal tampil (sesuai desain) tanpa mengunci scroll.
+     Begitu pengunjung mulai menggulir, modal menutup sendiri dengan halus. */
+  (function autoCloseOnFirstScroll() {
+    if (!modal) return;
+    var opts = { passive: true };
+
+    function handler() {
+      if (!modalLocked) closeModal();
+      remove();
+    }
+    function remove() {
+      window.removeEventListener("wheel", handler, opts);
+      window.removeEventListener("touchmove", handler, opts);
+      window.removeEventListener("scroll", handler, opts);
+      document.removeEventListener("keydown", keyHandler);
+    }
+    function keyHandler(e) {
+      var keys = ["ArrowDown", "PageDown", "End", " ", "Spacebar"];
+      if (keys.indexOf(e.key) !== -1 && !modalLocked) { closeModal(); remove(); }
+    }
+
+    window.addEventListener("wheel", handler, opts);
+    window.addEventListener("touchmove", handler, opts);
+    window.addEventListener("scroll", handler, opts);
+    document.addEventListener("keydown", keyHandler);
+  })();
+
+  /* ===================================================
+     7. NAVBAR MOBILE
+     =================================================== */
+  var navToggle = document.getElementById("navToggle");
+  var navMenu   = document.getElementById("navMenu");
+
   function closeNav() {
     if (!navMenu || !navToggle) return;
     navMenu.classList.remove("open");
@@ -63,14 +362,20 @@
   if (navToggle && navMenu) {
     navToggle.addEventListener("click", function () {
       var isOpen = navMenu.classList.toggle("open");
+      // tutup kartu login yang masih tampil otomatis agar tidak menutupi menu
+      if (isOpen && modal && modal.classList.contains("is-passive")) closeModal();
       navToggle.classList.toggle("open", isOpen);
       navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
     });
   }
 
-  /* ---------- Form ---------- */
+  /* ===================================================
+     8. FORM LOGIN
+     =================================================== */
   function showError(msg) {
     if (!formError) return;
+    formError.classList.remove("show");
+    void formError.offsetWidth;          // reset animasi getar
     formError.textContent = msg;
     formError.classList.add("show");
   }
@@ -84,38 +389,29 @@
   if (form) {
     form.addEventListener("submit", function (e) {
       e.preventDefault();
-      hideError();
 
       var email = emailInput ? emailInput.value.trim() : "";
       var pass  = passInput ? passInput.value : "";
       var emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email);
 
-      if (!email || !pass) {
-        showError("Email dan password wajib diisi.");
-        return;
-      }
-      if (!emailOk) {
-        showError("Format email belum benar.");
-        return;
-      }
-      if (pass.length < 6) {
-        showError("Password minimal 6 karakter.");
-        return;
-      }
+      if (!email || !pass) { showError("Email dan password wajib diisi."); return; }
+      if (!emailOk)        { showError("Format email belum benar."); return; }
+      if (pass.length < 6) { showError("Password minimal 6 karakter."); return; }
+
+      hideError();
 
       // >>> Sambungkan ke API/backend kamu di sini <<<
       var btn = form.querySelector(".btn-submit");
-      if (btn) {
-        var original = btn.textContent;
-        btn.textContent = "Loading...";
-        btn.disabled = true;
-        window.setTimeout(function () {
-          btn.textContent = original;
-          btn.disabled = false;
-          closeModal();
-          form.reset();
-        }, 900);
-      }
+      if (!btn) return;
+      var original = btn.textContent;
+      btn.textContent = "Loading...";
+      btn.disabled = true;
+      window.setTimeout(function () {
+        btn.textContent = original;
+        btn.disabled = false;
+        closeModal();
+        form.reset();
+      }, 900);
     });
 
     [emailInput, passInput].forEach(function (el) {
@@ -123,9 +419,12 @@
     });
   }
 
-  /* ---------- Video background ---------- */
+  /* ===================================================
+     9. VIDEO BACKGROUND
+     =================================================== */
+  var video = document.getElementById("bgVideo");
+
   if (video) {
-    // Sebagian browser memblokir autoplay sampai ada interaksi.
     var tryPlay = function () {
       var p = video.play();
       if (p && typeof p.catch === "function") p.catch(function () { /* diabaikan */ });
@@ -134,10 +433,24 @@
     document.addEventListener("click", tryPlay, { once: true });
     document.addEventListener("touchstart", tryPlay, { once: true });
 
-    // Kalau file video belum ada, sembunyikan <video> agar gradien cadangan tampil.
-    video.addEventListener("error", function () { video.style.display = "none"; }, true);
+    // Kalau file video benar-benar tidak ada / tidak didukung, sembunyikan <video>
+    // agar gradien cadangan yang tampil. Video yang hanya "lambat" tidak disembunyikan.
+    var hideVideo = function () { video.style.display = "none"; };
+    var showVideo = function () { video.style.display = ""; };
+
+    video.addEventListener("error", hideVideo, true);
+    video.addEventListener("loadeddata", showVideo);
+    video.addEventListener("canplay", showVideo);
+
     window.setTimeout(function () {
-      if (video.readyState === 0) video.style.display = "none";
+      // networkState 3 = NETWORK_NO_SOURCE (tidak ada sumber yang bisa dipakai)
+      if (video.networkState === 3 || video.error) hideVideo();
     }, 4000);
   }
+
+  /* ===================================================
+     10. LAIN-LAIN
+     =================================================== */
+  var year = document.getElementById("year");
+  if (year) year.textContent = new Date().getFullYear();
 })();
