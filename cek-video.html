@@ -43,6 +43,7 @@
 
     <video id="uji" muted loop playsinline controls preload="auto">
       <source src="assets/video/background.mp4" type="video/mp4" />
+      <source src="assets/video/background.webm" type="video/webm" />
     </video>
 
     <p class="hint">
@@ -57,6 +58,7 @@
   var box = document.getElementById("hasil");
   var vid = document.getElementById("uji");
   var url = "assets/video/background.mp4";
+  var urlWebm = "assets/video/background.webm";
 
   function tulis(id, judul, isi, status) {
     var el = document.getElementById(id);
@@ -73,7 +75,7 @@
   }
 
   // siapkan barisnya lebih dulu supaya urutannya rapi
-  ["r0","r1","r2","r3","r4","r5","r6"].forEach(function (id) { tulis(id, "Memeriksa...", "", ""); });
+  ["r0","r1","r2","r3","rw","r4","r5","r6"].forEach(function (id) { tulis(id, "Memeriksa...", "", ""); });
 
   tulis("r0", "Alamat yang diperiksa", new URL(url, location.href).href, "");
 
@@ -94,6 +96,18 @@
     .catch(function (e) {
       tulis("r1", "Gagal menghubungi file", String(e), "bad");
     });
+
+  // 1b. Versi cadangan WebM
+  fetch(urlWebm, { method: "GET", headers: { Range: "bytes=0-1023" } })
+    .then(function (res) {
+      if (res.status === 200 || res.status === 206) {
+        tulis("rw", "File cadangan WebM", "ada di server (status " + res.status + ")", "ok");
+      } else {
+        tulis("rw", "File cadangan WebM", "tidak ada (status " + res.status +
+          ") — belum ikut ter-deploy", "bad");
+      }
+    })
+    .catch(function (e) { tulis("rw", "File cadangan WebM", String(e), "bad"); });
 
   // 2. Apakah browser mendukung formatnya?
   var dukung = vid.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') ||

@@ -422,7 +422,8 @@
   /* ===================================================
      9. VIDEO BACKGROUND
      =================================================== */
-  var video = document.getElementById("bgVideo");
+  var video    = document.getElementById("bgVideo");
+  var playHint = document.getElementById("playHint");
 
   if (video) {
     // properti (bukan cuma atribut) — beberapa browser hanya mengizinkan
@@ -431,29 +432,80 @@
     video.defaultMuted = true;
     video.playsInline = true;
 
-    var tryPlay = function () {
+    var gestures = ["pointerdown", "touchstart", "keydown", "wheel", "scroll"];
+
+    function sembunyikanTombol() {
+      if (playHint) playHint.hidden = true;
+    }
+
+    function tampilkanTombol() {
+      // hanya bila videonya memang ada tapi ditahan browser
+      if (!playHint || !video.paused || video.error || video.networkState === 3) return;
+      playHint.hidden = false;
+    }
+
+    function coba() {
       if (!video.paused) return;
       var p = video.play();
-      if (p && typeof p.catch === "function") p.catch(function () { /* diabaikan */ });
-    };
+      if (p && typeof p.catch === "function") {
+        p.catch(function () { tampilkanTombol(); });
+      }
+    }
 
-    tryPlay();
-    video.addEventListener("loadedmetadata", tryPlay);
-    video.addEventListener("canplay", tryPlay);
-    document.addEventListener("click", tryPlay, { once: true });
-    document.addEventListener("touchstart", tryPlay, { once: true });
+    function lepasGesture() {
+      gestures.forEach(function (ev) { window.removeEventListener(ev, coba); });
+    }
+
+    // video baru ditampilkan begitu gambarnya benar-benar berjalan.
+    // dipasang ke beberapa event sekaligus karena atribut autoplay bisa membuat
+    // video sudah jalan sebelum skrip ini dieksekusi.
+    function tandaiJalan() {
+      if (video.paused) return;
+      video.classList.add("is-playing");
+      sembunyikanTombol();
+      lepasGesture();
+    }
+
+    video.addEventListener("playing", tandaiJalan);
+    video.addEventListener("play", tandaiJalan);
+    video.addEventListener("timeupdate", tandaiJalan);
+    tandaiJalan();
+    video.addEventListener("pause", function () { video.classList.remove("is-playing"); });
+
+    video.addEventListener("loadeddata", coba);
+    video.addEventListener("canplay", coba);
     document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) tryPlay();
+      if (!document.hidden) coba();
     });
+
+    // setiap interaksi pengguna dipakai sebagai izin untuk memulai video
+    gestures.forEach(function (ev) {
+      window.addEventListener(ev, coba, { passive: true });
+    });
+
+    if (playHint) {
+      playHint.addEventListener("click", function (e) {
+        e.preventDefault();
+        video.play();
+        sembunyikanTombol();
+      });
+    }
+
+    coba();
+
+    // masih diam setelah 2,5 detik padahal filenya ada -> tawarkan tombol
+    window.setTimeout(function () {
+      if (video.paused) tampilkanTombol();
+    }, 2500);
 
     // Kalau file video benar-benar tidak ada / tidak didukung, sembunyikan <video>
     // agar gradien cadangan yang tampil. Video yang hanya "lambat" tidak disembunyikan.
-    var hideVideo = function () { video.style.display = "none"; };
-    var showVideo = function () { video.style.display = ""; };
+    var hideVideo = function () {
+      video.style.display = "none";
+      sembunyikanTombol();
+    };
 
     video.addEventListener("error", hideVideo, true);
-    video.addEventListener("loadeddata", showVideo);
-    video.addEventListener("canplay", showVideo);
 
     window.setTimeout(function () {
       // networkState 3 = NETWORK_NO_SOURCE (tidak ada sumber yang bisa dipakai)
