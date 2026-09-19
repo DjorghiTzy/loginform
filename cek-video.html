@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cek Video Background</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+    background: linear-gradient(180deg, #0e1013, #34383e);
+    color: #f0f2f5;
+    min-height: 100vh;
+    padding: 40px 20px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; margin-bottom: 6px; }
+  .sub { color: #a9afb8; font-size: 14px; margin-bottom: 26px; }
+  .row {
+    display: flex; gap: 14px; align-items: flex-start;
+    padding: 14px 16px; margin-bottom: 10px;
+    background: rgba(255,255,255,.07);
+    border: 1px solid rgba(255,255,255,.14);
+    border-radius: 12px;
+  }
+  .row > div { flex: 1 1 auto; min-width: 0; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; background: #8b919a; flex: none; margin-top: 4px; }
+  .ok .dot { background: #4ade80; }
+  .bad .dot { background: #f87171; }
+  .row b { display: block; font-size: 14.5px; margin-bottom: 3px; }
+  .row .txt { display: block; font-size: 13.5px; color: #b7bdc6; word-break: break-all; }
+  video { width: 100%; border-radius: 12px; margin-top: 18px; background: #000; }
+  .hint { margin-top: 22px; font-size: 13.5px; line-height: 1.8; color: #b7bdc6; }
+  code { background: rgba(255,255,255,.12); padding: 2px 6px; border-radius: 5px; }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Cek Video Background</h1>
+    <p class="sub">Halaman ini memeriksa <code>assets/video/background.mp4</code> di server yang sedang kamu buka.</p>
+
+    <div id="hasil"></div>
+
+    <video id="uji" muted loop playsinline controls preload="auto">
+      <source src="assets/video/background.mp4" type="video/mp4" />
+    </video>
+
+    <p class="hint">
+      Semua titik hijau berarti videonya ada, terkirim benar, dan bisa diputar browser ini —
+      kalau di halaman utama masih tidak tampil, berarti masalahnya di halaman, bukan di file.<br />
+      Ada titik merah? Kirim isi halaman ini ke saya, nanti saya perbaiki sesuai temuannya.
+    </p>
+  </div>
+
+<script>
+(function () {
+  var box = document.getElementById("hasil");
+  var vid = document.getElementById("uji");
+  var url = "assets/video/background.mp4";
+
+  function tulis(id, judul, isi, status) {
+    var el = document.getElementById(id);
+    if (!el) {
+      el = document.createElement("div");
+      el.id = id;
+      el.className = "row";
+      el.innerHTML = '<span class="dot"></span><div><b></b><span class="txt"></span></div>';
+      box.appendChild(el);
+    }
+    el.className = "row" + (status ? " " + status : "");
+    el.querySelector("b").textContent = judul;
+    el.querySelector(".txt").textContent = isi;
+  }
+
+  // siapkan barisnya lebih dulu supaya urutannya rapi
+  ["r0","r1","r2","r3","r4","r5","r6"].forEach(function (id) { tulis(id, "Memeriksa...", "", ""); });
+
+  tulis("r0", "Alamat yang diperiksa", new URL(url, location.href).href, "");
+
+  // 1. Apakah file ada di server?
+  fetch(url, { method: "GET", headers: { Range: "bytes=0-1023" } })
+    .then(function (res) {
+      var tipe = res.headers.get("content-type") || "(tidak disebutkan)";
+      var panjang = res.headers.get("content-range") || res.headers.get("content-length") || "(tidak disebutkan)";
+      if (res.status === 200 || res.status === 206) {
+        tulis("r1", "File ditemukan di server", "Status " + res.status, "ok");
+        tulis("r2", "Tipe konten", tipe, tipe.indexOf("video") === 0 ? "ok" : "bad");
+        tulis("r3", "Ukuran / jangkauan", String(panjang), "ok");
+      } else {
+        tulis("r1", "File TIDAK ditemukan", "Status " + res.status +
+          " — deployment di server ini belum berisi file videonya.", "bad");
+      }
+    })
+    .catch(function (e) {
+      tulis("r1", "Gagal menghubungi file", String(e), "bad");
+    });
+
+  // 2. Apakah browser mendukung formatnya?
+  var dukung = vid.canPlayType('video/mp4; codecs="avc1.42E01E, mp4a.40.2"') ||
+               vid.canPlayType("video/mp4");
+  tulis("r4", "Dukungan format browser", dukung ? "didukung (" + dukung + ")" : "TIDAK didukung browser ini",
+        dukung ? "ok" : "bad");
+
+  // 3. Apakah benar-benar bisa diputar?
+  tulis("r5", "Status pemutaran", "menunggu...", "");
+  vid.addEventListener("error", function () {
+    tulis("r5", "Status pemutaran", "gagal memuat video", "bad");
+  }, true);
+  vid.addEventListener("loadeddata", function () {
+    tulis("r5", "Status pemutaran", "video termuat (" + vid.videoWidth + "x" + vid.videoHeight +
+      ", " + Math.round(vid.duration) + " detik)", "ok");
+    var p = vid.play();
+    if (p && p.catch) p.catch(function () {});
+  });
+
+  // 4. Apakah gambarnya benar-benar berjalan?
+  var awal = 0, dicek = false;
+  setTimeout(function () { awal = vid.currentTime; }, 1500);
+  setTimeout(function () {
+    if (dicek) return;
+    dicek = true;
+    var jalan = vid.currentTime > awal;
+    tulis("r6", "Gambar berjalan otomatis", jalan
+      ? "ya, waktu berjalan sampai " + vid.currentTime.toFixed(1) + " detik"
+      : "belum berjalan — coba tekan tombol play di bawah; kalau baru jalan setelah ditekan, "
+        + "berarti browser memblokir autoplay", jalan ? "ok" : "bad");
+  }, 4500);
+})();
+</script>
+</body>
+</html>

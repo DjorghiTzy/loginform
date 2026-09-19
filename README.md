@@ -56,6 +56,12 @@ Kalau filenya tidak ada, halaman tetap tampil memakai gradien abu-abu sebagai ca
 3. Pastikan **Production Branch** di Settings → Git sesuai dengan branch yang dipakai.
 4. Deploy.
 
+## Kalau videonya tidak tampil
+
+Buka `<alamat-situs>/cek-video.html`. Halaman itu memeriksa satu per satu:
+file ada atau tidak di server, tipe kontennya benar atau tidak, formatnya didukung browser
+atau tidak, dan videonya benar-benar berjalan atau tidak — lengkap dengan titik hijau/merah.
+
 ## Catatan
 
 - Video diputar `autoplay muted loop playsinline` agar jalan otomatis di semua browser termasuk iOS.
